@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Entity
 @Data
@@ -12,21 +11,22 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table(name = "beer")
-public class Beer {
+@Table(name = "payment")
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal price;
+    private BigDecimal amount;
 
     @Column(nullable = false)
-    private Integer stock;
+    private String paymentMethod;
 
-    @OneToMany(mappedBy = "beer")
-    private Set<CartItem> beerCartItems;
+    @Column
+    private Integer installment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orders_id")
+    private Order order;
 }

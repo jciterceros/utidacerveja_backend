@@ -12,21 +12,25 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table(name = "beer")
-public class Beer {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal price;
+    private BigDecimal total;
 
     @Column(nullable = false)
-    private Integer stock;
+    private String status;
 
-    @OneToMany(mappedBy = "beer")
-    private Set<CartItem> beerCartItems;
+    @Column
+    private String deliveryStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @OneToMany(mappedBy = "order")
+    private Set<Payment> orderPayments;
 }
