@@ -1,0 +1,78 @@
+@startuml
+!define ENTITY class
+!define PRIMARY_KEY <<PK>>
+!define FOREIGN_KEY <<FK>>
+
+ENTITY beer {
+  ' Cerveja
+  id BIGINT PRIMARY_KEY
+  name VARCHAR(255) NOT NULL
+  price DECIMAL(12, 2) NOT NULL
+  stock INTEGER NOT NULL
+}
+
+ENTITY customer {
+  ' Cliente
+  id BIGINT PRIMARY_KEY
+  name VARCHAR(255) NOT NULL
+  email VARCHAR(255) NOT NULL
+  password VARCHAR(255) NOT NULL
+}
+
+ENTITY address {
+  ' Endereço
+  id BIGINT PRIMARY_KEY
+  street VARCHAR(255) NOT NULL
+  city VARCHAR(255) NOT NULL
+  state VARCHAR(255) NOT NULL
+  postal_code VARCHAR(10) NOT NULL
+  customer_id BIGINT FOREIGN_KEY
+}
+
+ENTITY cart {
+  ' Carrinho
+  id BIGINT PRIMARY_KEY
+  customer_id BIGINT FOREIGN_KEY
+}
+
+ENTITY cart_item {
+  ' Item do carrinho
+  id BIGINT PRIMARY_KEY
+  quantity INT NOT NULL
+  cart_id BIGINT FOREIGN_KEY
+  beer_id BIGINT FOREIGN_KEY
+}
+
+ENTITY order {
+  ' Pedido
+  id BIGINT PRIMARY_KEY
+  customer_id BIGINT FOREIGN_KEY
+  total DECIMAL(10, 2) NOT NULL
+  status VARCHAR(255) NOT NULL
+  delivery_status VARCHAR(255)
+}
+
+ENTITY payment {
+  ' Pagamento
+  id BIGINT PRIMARY_KEY
+  order_id BIGINT FOREIGN_KEY
+  amount DECIMAL(10, 2) NOT NULL
+  payment_method VARCHAR(255) NOT NULL
+  installment INT
+}
+
+beer --|{ cart_item : contains
+cart_item }|--|| cart : includes
+customer ||--o{ address : has
+customer ||--o{ cart : has
+customer ||--o{ order : places
+order ||--|{ payment : includes
+
+' beer contém muitos cart_item
+' cart_item inclui muitos itens em cart
+' customer tem muitos address
+' customer tem muitos cart
+' customer faz muitos order
+' order inclui muitos payment
+
+@enduml

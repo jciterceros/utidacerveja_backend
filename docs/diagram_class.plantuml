@@ -1,0 +1,84 @@
+@startuml
+!define ENTITY class
+!define PRIMARY_KEY <<PK>>
+!define FOREIGN_KEY <<FK>>
+
+ENTITY Beer {
+  -id: BIGINT <<PK>>
+  -name: VARCHAR(255)
+  -price: DECIMAL(12, 2)
+  -stock: INT
+  +getters()
+  +setters()
+}
+
+ENTITY Customer {
+  -id: BIGINT <<PK>>
+  -name: VARCHAR(255)
+  -email: VARCHAR(255)
+  -password: VARCHAR(255)
+  +getters()
+  +setters()
+}
+
+ENTITY Address {
+  -id: BIGINT <<PK>>
+  -customer_id: BIGINT <<FK>>
+  -street: VARCHAR(255)
+  -city: VARCHAR(255)
+  -state: VARCHAR(255)
+  -postal_code: VARCHAR(10)
+  +getters()
+  +setters()
+}
+
+ENTITY Cart {
+  -id: BIGINT <<PK>>
+  -customer_id: BIGINT <<FK>>
+  +getters()
+  +setters()
+}
+
+ENTITY CartItem {
+  -id: BIGINT <<PK>>
+  -cart_id: BIGINT <<FK>>
+  -beer_id: BIGINT <<FK>>
+  -quantity: INT
+  +getters()
+  +setters()
+}
+
+ENTITY Order {
+  -id: BIGINT <<PK>>
+  -customer_id: BIGINT <<FK>>
+  -total: DECIMAL(12, 2)
+  -status: VARCHAR(255)
+  -delivery_status: VARCHAR(255)
+  +getters()
+  +setters()
+}
+
+ENTITY Payment {
+  -id: BIGINT <<PK>>
+  -order_id: BIGINT <<FK>>
+  -amount: DECIMAL(12, 2)
+  -payment_method: VARCHAR(255)
+  -installment: INT
+  +getters()
+  +setters()
+}
+
+Beer "0..1" -- "0..*" CartItem : contains
+CartItem "0..*" -- "0..1" Cart : includes
+Customer "0..1" -- "0..*" Address : has
+Customer "0..1" -- "0..*" Cart : has
+Customer "0..1" -- "0..*" Order : places
+Order "0..1" -- "0..*" Payment : includes
+
+' beer contém muitos cart_item
+' cart_item inclui muitos itens em cart
+' customer tem muitos address
+' customer tem muitos cart
+' customer faz muitos order
+' order inclui muitos payment
+@enduml
